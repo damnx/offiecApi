@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\User;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -15,7 +16,7 @@ class UserController extends Controller
      */
     public function index()
     {
-        
+
     }
 
     public function me()
@@ -41,13 +42,36 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
+
         $validator = Validator::make($request->all(), [
-            'email' => 'required|email',
+            'email' => 'required|email|unique:users',
             'password' => 'required',
+            'name' => 'required',
+            'address' => 'required',
+            'gender' => 'required|numeric',
         ]);
         if ($validator->fails()) {
-            dd('khong qua validator');
+            $errors = $validator->errors();
+            $data = [
+                'status' => 1,
+                'error' => $errors,
+                'data' => [],
+            ];
+            return response()->json($data);
         }
+        $user = new user;
+        $user->email = $request->email;
+        $user->password = bcrypt($request->password);
+        $user->name = $request->name;
+        $user->address = $request->address;
+        $user->gender = $request->gender;
+        $user->is_active = $request->is_active;
+        $user->phone_number = $request->phone_number;
+        $user->is_online = 0;
+        $user->level = 1;
+        $user->is_sadmin = 0;
+        $data = $user->save();
+        return response()->json($user);
 
     }
 
