@@ -42,7 +42,7 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-
+        
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
@@ -50,6 +50,7 @@ class UserController extends Controller
             'address' => 'required',
             'gender' => 'required|numeric',
         ]);
+
         if ($validator->fails()) {
             $errors = $validator->errors();
             $data = [
@@ -59,6 +60,7 @@ class UserController extends Controller
             ];
             return response()->json($data);
         }
+
         $user = new user;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
@@ -71,8 +73,15 @@ class UserController extends Controller
         $user->level = 1;
         $user->is_sadmin = 0;
         $data = $user->save();
-        return response()->json($user);
-
+        
+        if ($data){
+            $data = [
+                'status' => 0,
+                'error' => [],
+                'data' => $user,
+            ];
+            return response()->json($data);
+        }
     }
 
     /**

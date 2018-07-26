@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class AddVotesToUsersTable extends Migration
+class AddVotesToUsersTable7262018 extends Migration
 {
     /**
      * Run the migrations.
@@ -14,7 +14,7 @@ class AddVotesToUsersTable extends Migration
     public function up()
     {
         Schema::table('users', function (Blueprint $table) {
-            
+            //
         });
     }
 
