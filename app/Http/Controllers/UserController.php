@@ -19,9 +19,33 @@ class UserController extends Controller
 
     }
 
-    public function me()
+    public function me(Request $request)
     {
-        dd('123213');
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            $errors = $validator->errors();
+            $data = [
+                'status' => 1,
+                'error' => $errors,
+                'data' => [],
+            ];
+            return response()->json($data);
+        }
+
+        $user = new user;
+        $email = $request->username;
+        $user = $user::where('email', $email)->first();
+        $data = [
+            'status' => 0,
+            'error' => [],
+            'data' => $user,
+        ];
+        return response()->json($data);
+
     }
 
     /**
@@ -42,11 +66,11 @@ class UserController extends Controller
      */
     public function store(Request $request)
     {
-        
+
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
-            'name' => 'required',
+            'full_name' => 'required',
             'address' => 'required',
             'gender' => 'required|numeric',
         ]);
@@ -64,7 +88,7 @@ class UserController extends Controller
         $user = new user;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->name = $request->name;
+        $user->name = $request->full_name;
         $user->address = $request->address;
         $user->gender = $request->gender;
         $user->is_active = $request->is_active;
@@ -73,8 +97,8 @@ class UserController extends Controller
         $user->level = 1;
         $user->is_sadmin = 0;
         $data = $user->save();
-        
-        if ($data){
+
+        if ($data) {
             $data = [
                 'status' => 0,
                 'error' => [],
