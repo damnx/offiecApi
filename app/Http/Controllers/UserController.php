@@ -19,9 +19,41 @@ class UserController extends Controller
 
     }
 
-    public function me()
+    public function me(Request $request)
     {
-        dd('123213');
+        $validator = Validator::make($request->all(), [
+            'username' => 'required',
+            'password' => 'required'
+        ]);
+
+        if ($validator->fails()) { 
+            $errors = $validator->errors();
+            $data = [
+                'status' => 1,
+                'error' => $errors,
+                'data' => [],
+            ];
+            return response()->json($data);
+        }
+
+        $email = $request->username;
+        $flightUser = User::where('email', $email)->first();
+        $flightUser->roles;
+        $roles = $flightUser['roles'];
+        $permission ='';
+        foreach($roles as $key => $value){
+            $permission=($permission  != '') ? $permission.','.$value['permission']:$value['permission'];
+        }
+        $permission = ($permission !='')?array_combine(explode(",",$permission), explode(",",$permission)):[] ;
+        unset($flightUser['roles']);
+        $flightUser['permission'] = $permission;
+        $data = [
+            'status' => 0,
+            'error' => [],
+            'data' => $flightUser,
+        ];
+        
+        return response()->json($data);
     }
 
     /**
@@ -31,7 +63,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        //
+        
     }
 
     /**
@@ -46,7 +78,7 @@ class UserController extends Controller
         $validator = Validator::make($request->all(), [
             'email' => 'required|email|unique:users',
             'password' => 'required',
-            'name' => 'required',
+            'full_name' => 'required',
             'address' => 'required',
             'gender' => 'required|numeric',
         ]);
@@ -59,12 +91,13 @@ class UserController extends Controller
                 'data' => [],
             ];
             return response()->json($data);
+            
         }
 
         $user = new user;
         $user->email = $request->email;
         $user->password = bcrypt($request->password);
-        $user->name = $request->name;
+        $user->name = $request->full_name;
         $user->address = $request->address;
         $user->gender = $request->gender;
         $user->is_active = $request->is_active;
