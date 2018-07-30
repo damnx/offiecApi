@@ -17,4 +17,5 @@
 Route::post('/register', 'UserController@store');
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/me', 'UserController@me');
+    Route::post('/roles', 'RolesController@store');
 });
