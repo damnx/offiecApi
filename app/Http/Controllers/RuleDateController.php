@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\RuleDate;
+use App\User;
 use Illuminate\Http\Request;
 
 class RuleDateController extends Controller
@@ -34,11 +36,14 @@ class RuleDateController extends Controller
      */
     public function store(Request $request)
     {
-        //
-        // $user = ['5', '6'];
-        // $rule = Rule::find(1);
-        // $rule->user->sync($user);
-        
+        $data = [
+            'name' => $request->name,
+            'date' => json_encode($request->date),
+            'description' => $request->description,
+        ];
+        $ruleDate = RuleDate::create($data);
+        $ussers = User::find(5);
+        $ussers->ruleDate->attach($ruleDate->id);
     }
 
     /**

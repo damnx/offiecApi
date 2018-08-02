@@ -16,17 +16,23 @@ class UserController extends Controller
      */
     public function index()
     {
-
+        $user = User::all();
+        $data = [
+            'status' => 0,
+            'error' => [],
+            'data' => $user,
+        ];
+        return response()->json($data);
     }
 
     public function me(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'username' => 'required',
-            'password' => 'required'
+            'password' => 'required',
         ]);
 
-        if ($validator->fails()) { 
+        if ($validator->fails()) {
             $errors = $validator->errors();
             $data = [
                 'status' => 1,
@@ -40,11 +46,11 @@ class UserController extends Controller
         $flightUser = User::where('email', $email)->first();
         $flightUser->roles;
         $roles = $flightUser['roles'];
-        $permission ='';
-        foreach($roles as $key => $value){
-            $permission=($permission  != '') ? $permission.','.$value['permission']:$value['permission'];
+        $permission = '';
+        foreach ($roles as $key => $value) {
+            $permission = ($permission != '') ? $permission . ',' . $value['permission'] : $value['permission'];
         }
-        $permission = ($permission !='')?array_combine(explode(",",$permission), explode(",",$permission)):[] ;
+        $permission = ($permission != '') ? array_combine(explode(",", $permission), explode(",", $permission)) : [];
         unset($flightUser['roles']);
         $flightUser['permission'] = $permission;
         $data = [
@@ -52,7 +58,7 @@ class UserController extends Controller
             'error' => [],
             'data' => $flightUser,
         ];
-        
+
         return response()->json($data);
     }
 
@@ -63,7 +69,7 @@ class UserController extends Controller
      */
     public function create()
     {
-        
+
     }
 
     /**
@@ -91,7 +97,7 @@ class UserController extends Controller
                 'data' => [],
             ];
             return response()->json($data);
-            
+
         }
 
         $user = new user;

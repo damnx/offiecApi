@@ -17,5 +17,7 @@
 Route::post('/register', 'UserController@store');
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/me', 'UserController@me');
+    Route::get('/get-list-users', 'UserController@index');
     Route::post('/roles', 'RolesController@store');
+    Route::post('/create-rule-date', 'RuleDateController@store');
 });
