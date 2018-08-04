@@ -70,7 +70,7 @@ class GroupUserController extends Controller
 
         $groupUsers = GroupUser::create($dataGroupUsers);
 
-        if ($GroupUsers) {
+        if ($groupUsers) {
             $data = [
                 'status' => 0,
                 'error' => [],
@@ -112,9 +112,18 @@ class GroupUserController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $validator = Validator::make($request->all(), [
+        $name = $request->name;
+        $nameParent = $request->nameParent;
+        $dataValidator = [
             'status' => 'required',
-        ]);
+        ];
+        if ($name != $nameParent) {
+            $dataValidator = [
+                'name' => 'required|unique:group_users',
+                'status' => 'required',
+            ];
+        }
+        $validator = Validator::make($request->all(), $dataValidator);
 
         if ($validator->fails()) {
             $errors = $validator->errors();
@@ -126,7 +135,7 @@ class GroupUserController extends Controller
             return response()->json($data);
         }
 
-        $groupUsers = GroupUser::where('id', $id)->update(['status' => $request->status]);
+        $groupUsers = GroupUser::where('id', $id)->update(['status' => $request->status, 'name' => $request->name]);
         if ($groupUsers) {
             $data = [
                 'status' => 0,
