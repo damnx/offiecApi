@@ -28,7 +28,19 @@ class GroupUserController extends Controller
         //
     }
 
-    public function getAllGroupUsers(Request $request)
+    public function getAllGroupUsers()
+    {
+        $dataGroupUser = GroupUser::withCount('user')->where('status','public')->orderBy('id', 'desc')->get();
+        $data = [
+            'status' => 0,
+            'error' => [],
+            'data' => $dataGroupUser,
+        ];
+        return response()->json($data);
+
+    }
+
+    public function getAllGroupUsersPaginate(Request $request)
     {
         $dataGroupUser = GroupUser::withCount('user')->orderBy('id', 'desc')->paginate($request->page_size);
         $data = [
@@ -39,6 +51,8 @@ class GroupUserController extends Controller
         return response()->json($data);
 
     }
+
+
 
     /**
      * Store a newly created resource in storage.
