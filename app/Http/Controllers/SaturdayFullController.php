@@ -2,8 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\SaturdayFulls;
+use Illuminate\Http\Request;
 use Validator;
 
 class SaturdayFullController extends Controller
@@ -37,7 +37,9 @@ class SaturdayFullController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'date_saturday_fulls' => 'required|json',
+            'inputs'=>'required|array',
+            'inputs.*.id_group_users' => 'required|numeric',
+            'inputs.*.date_saturday_fulls' => 'required|json',
         ]);
 
         if ($validator->fails()) {
@@ -49,6 +51,31 @@ class SaturdayFullController extends Controller
             ];
             return response()->json($data);
         }
+
+        $inputs = $request->inputs;
+        $check = true;
+        $data = [];
+        foreach ($inputs as $row) {
+            $items = new SaturdayFulls([
+                'id_group_users' => $row['id_group_users'],
+                'date_saturday_fulls' => $row['date_saturday_fulls'],
+            ]);
+            if ($items->save() == false) {
+                $check = false;
+            } else {
+                $data[] = $items;
+            }
+        }
+
+        if ($check) {
+            $dataNews = [
+                'status' => 0,
+                'error' => [],
+                'data' => $data,
+            ];
+            return response()->json($dataNews);
+        }
+
     }
 
     /**
