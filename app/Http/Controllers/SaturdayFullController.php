@@ -2,7 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\SaturdayFulls;
+use App\GroupUser;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -28,6 +28,25 @@ class SaturdayFullController extends Controller
         //
     }
 
+    public function getSaturdayFullController(Request $request, $type)
+    {
+        // type = 1 get full
+        // type =2 get paginate
+        if ($type == '1') {
+            $data = GroupUser::with('saturdayFulls')->orderBy('id', 'desc')->get();
+        } else {
+            $data = GroupUser::with('saturdayFulls')->orderBy('id', 'desc')->paginate($request->page_size);
+        }
+
+        $dataNews = [
+            'status' => 0,
+            'error' => [],
+            'data' => $data,
+        ];
+        
+        return response()->json($dataNews);
+    }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -37,7 +56,7 @@ class SaturdayFullController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'inputs'=>'required|array',
+            'inputs' => 'required|array',
             'inputs.*.id_group_users' => 'required|numeric',
             'inputs.*.date_saturday_fulls' => 'required|json',
         ]);
