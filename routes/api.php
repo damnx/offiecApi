@@ -15,6 +15,7 @@
 //     return $request->user();
 // });
 Route::post('/register', 'UserController@store');
+Route::get('/test', 'CalendarControllerWork@test');
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/me', 'UserController@me');
     Route::get('/get-list-users', 'UserController@index');
@@ -26,4 +27,6 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/get-all-group-users', 'GroupUserController@getAllGroupUsers');
     Route::put('/update-group-users/{id}', 'GroupUserController@update');
     Route::delete('/delete-group-users/{id}', 'GroupUserController@destroy');
+    Route::post('/create-calendar-work', 'CalendarControllerWork@store');
+    Route::get('/get-calendar-work/{date}', 'CalendarControllerWork@getCalendarWork');
 });

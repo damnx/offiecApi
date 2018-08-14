@@ -21,4 +21,10 @@ class GroupUser extends Model
     {
         return $this->hasMany('App\SaturdayFulls', 'id_group_users', 'id');
     }
+
+    public function calendars()
+    {
+        return $this->belongsToMany('App\Calendars', 'calendar_work_group_user','group_user_id', 'calendars_id');
+    }
+
 }
