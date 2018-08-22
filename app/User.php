@@ -34,6 +34,7 @@ class User extends Authenticatable
         return $this->hasMany('App\Roles', 'id_users', 'id');
     }
 
+    // mối quan hệ users  với group users 
     public function groupUser()
     {
         return $this->belongsTo('App\GroupUser', 'group_user_id', 'id');

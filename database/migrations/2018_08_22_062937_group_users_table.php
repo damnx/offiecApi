@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateSaturdayFullTable extends Migration
+class GroupUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,10 +13,11 @@ class CreateSaturdayFullTable extends Migration
      */
     public function up()
     {
-        Schema::create('saturday_fulls', function (Blueprint $table) {
+        Schema::create('group_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('id_group_users');
-            $table->json('date_saturday_fulls');
+            $table->string('name', 100)->unique();
+            $table->longText('description')->nullable($value = true);
+            $table->enum('status', ['public ', 'pending']);
             $table->timestamps();
         });
     }
@@ -28,6 +29,6 @@ class CreateSaturdayFullTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('saturday_fulls');
+        Schema::dropIfExists('group_users');
     }
 }

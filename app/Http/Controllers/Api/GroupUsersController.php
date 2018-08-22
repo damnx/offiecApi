@@ -1,12 +1,12 @@
 <?php
 
-namespace App\Http\Controllers;
+namespace App\Http\Controllers\Api;
 
-use App\Calendars;
+use App\Http\Controllers\Controller;
+use App\Http\Requests\GroupUsersRequests;
 use Illuminate\Http\Request;
-use Validator;
 
-class CalendarControllerWork extends Controller
+class GroupUsersController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,27 +15,7 @@ class CalendarControllerWork extends Controller
      */
     public function index()
     {
-
-    }
-
-    public function test()
-    {
-
-    }
-
-    public function getCalendarWork($date)
-    {
-        $calendars = Calendars::with(['groupUser' => function ($query) {
-            $query->where('status', '=', 'public');
-            $query->with('user');
-        }])->where('date', 'like', $date . '%')->get();
-
-        $dataNews = [
-            'status' => 0,
-            'error' => [],
-            'data' => $calendars,
-        ];
-        return response()->json($dataNews);
+        //
     }
 
     /**
@@ -46,6 +26,7 @@ class CalendarControllerWork extends Controller
     public function create()
     {
         //
+       
     }
 
     /**
@@ -54,32 +35,12 @@ class CalendarControllerWork extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(GroupUsersRequests $request)
     {
-
-        $validator = Validator::make($request->all(), [
-            'group_users' => 'required|array',
-            'inputs' => 'required|array',
-            'inputs.*.day' => 'required|numeric',
-            'inputs.*.date' => 'required|max:20',
-            'start' => 'required',
-            'end' => 'required',
-        ]);
-
-        if ($validator->fails()) {
-            $errors = $validator->errors();
-            $data = [
-                'status' => 1,
-                'error' => $errors,
-                'data' => [],
-            ];
-            return response()->json($data);
-        }
-
-        
-
-        
-
+       
+        //create group-users
+        $validated = $request->validated();
+        echo $validated;
     }
 
     /**
@@ -90,7 +51,7 @@ class CalendarControllerWork extends Controller
      */
     public function show($id)
     {
-
+        //
     }
 
     /**

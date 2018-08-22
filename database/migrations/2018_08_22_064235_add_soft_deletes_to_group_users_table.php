@@ -4,7 +4,7 @@ use Illuminate\Support\Facades\Schema;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Database\Migrations\Migration;
 
-class CreateGroupUsersTable extends Migration
+class AddSoftDeletesToGroupUsersTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,9 @@ class CreateGroupUsersTable extends Migration
      */
     public function up()
     {
-        Schema::create('group_users', function (Blueprint $table) {
-            $table->increments('id');
-            $table->string('name');
-            $table->enum('status', ['public', 'pending']);
-            $table->timestamps();
+        Schema::table('group_users', function (Blueprint $table) {
+            //
+            $table->softDeletes();
         });
     }
 
@@ -28,6 +26,9 @@ class CreateGroupUsersTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('group_users');
+        Schema::table('group_users', function (Blueprint $table) {
+            //xóa
+            $table->dropSoftDeletes();
+        });
     }
 }
