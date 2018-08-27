@@ -21,6 +21,8 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/get-list-users', 'UserController@index');
     Route::post('/roles', 'RolesController@store');
     Route::post('/create-group-users', 'Api\GroupUsersController@store');
+    Route::post('/create-job-calendar', 'Api\JobCalendarController@store');
+    Route::put('/update-job-calendar/{id}', 'Api\JobCalendarController@update');
 
     // Route::post('/create-date-saturday-working-full', 'SaturdayFullController@store');
     // Route::get('/get-date-saturday-working-full/{type}', 'SaturdayFullController@getSaturdayFullController');
