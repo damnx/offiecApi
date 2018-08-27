@@ -23,6 +23,11 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/create-group-users', 'Api\GroupUsersController@store');
     Route::post('/create-job-calendar', 'Api\JobCalendarController@store');
     Route::put('/update-job-calendar/{id}', 'Api\JobCalendarController@update');
+    Route::put('/update-group-users/{id}', 'Api\GroupUsersController@update');
+    Route::get('/details-group-users/{id}', 'Api\GroupUsersController@show');
+    Route::get('/get-list-group-users', 'Api\GroupUsersController@getListGroupUsers');
+    Route::delete('/delete-group-users/{id}', 'Api\GroupUsersController@destroy');
+    Route::delete('/restore-group-users/{id}', 'Api\GroupUsersController@restoreGroupUsers');
 
     // Route::post('/create-date-saturday-working-full', 'SaturdayFullController@store');
     // Route::get('/get-date-saturday-working-full/{type}', 'SaturdayFullController@getSaturdayFullController');
