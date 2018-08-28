@@ -3,12 +3,18 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
 use App\Http\Requests\GroupUsersRequests;
 use App\JobCalendar;
+use Illuminate\Http\Request;
 
 class JobCalendarController extends Controller
 {
+    protected $jobCalendar;
+
+    public function __construct(JobCalendar $jobCalendar)
+    {
+        $this->jobCalendar = $jobCalendar;
+    }
     /**
      * Display a listing of the resource.
      *
@@ -37,14 +43,9 @@ class JobCalendarController extends Controller
      */
     public function store(GroupUsersRequests $request)
     {
-
-        $data = JobCalendar::createJobCalendarGroupUses($request->all());
-        return response()->json([
-            'message' => '',
-            'error' => null,
-            'data' => $data,
-        ]);
-     
+        if ($request->isMethod('post')) {
+            return  $this->jobCalendar->createJobCalendarGroupUses($request->all());
+        }
 
     }
 
@@ -79,7 +80,9 @@ class JobCalendarController extends Controller
      */
     public function update(GroupUsersRequests $request, $id)
     {
-        //
+        if ($request->isMethod('put')) {
+            return $this->jobCalendar->updateJobCalendarGroupUses($request->all(), $id);
+        }
     }
 
     /**

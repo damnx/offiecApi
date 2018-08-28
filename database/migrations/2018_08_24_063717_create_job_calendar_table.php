@@ -14,7 +14,7 @@ class CreateJobCalendarTable extends Migration
     public function up()
     {
         Schema::create('job_calendar', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id');
             $table->string('date',10);
             $table->tinyInteger('day')->comment(
                 '0=>Sunday',

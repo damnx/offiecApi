@@ -36,10 +36,20 @@ class GroupUsersRequests extends FormRequest
         $groupUserId = request()->group_user_id;
         if (is_array($groupUserId)) {
             foreach ($groupUserId as $key => $value) {
-                $rules['group_user_id.' . $key] = 'required|numeric';
+                $rules['group_user_id.' . $key] = 'required';
             }
         } else {
             $rules['group_user_id'] = 'required|array';
+        }
+
+        if ($id) {
+            $groupUserIdRemove = request()->group_user_id_remove;
+            if (is_array($groupUserIdRemove)) {
+                foreach ($groupUserIdRemove as $key => $value) {
+                    $rules['group_user_id_remove.' . $key] = 'required';
+                }
+            }
+
         }
 
         return $rules;
