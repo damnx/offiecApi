@@ -133,7 +133,6 @@ class JobCalendar extends Model
             if ($jobCalendar) {
                 return null;
             }
-
             $groupUserId = $request['group_user_id'];
             $check = false;
             $iteam = [];
