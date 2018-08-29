@@ -9,6 +9,7 @@ use Illuminate\Support\Facades\DB;
 
 class JobCalendar extends Model
 {
+
     use SoftDeletes;
     protected $table = 'job_calendar';
     protected $primaryKey = 'id';
@@ -25,28 +26,57 @@ class JobCalendar extends Model
 
     public function getFindJobCalendar($id)
     {
-        $jobCalendar = JobCalendar::find($id);
+        try {
+            $jobCalendar = JobCalendar::find($id);
+            return $jobCalendar;
+        } catch (\Exception $e) {
+            return null;
+        }
+
+    }
+
+    // create jobCalendar
+    public function createJobCalendar($request)
+    {
+        try {
+            $jobCalendar = JobCalendar::create([
+                'id' => uniqid(null, true),
+                'date' => $request['date'],
+                'day' => $request['day'],
+                'description' => isset($request['description']) ? $request['description'] : null,
+            ]);
+            return $jobCalendar;
+
+        } catch (\Exception $e) {
+            return null;
+        }
+
+    }
+
+    public function updateJobCalendar($id, $request)
+    {
+        $jobCalendar = $this->getFindJobCalendar($id);
+        if (!$jobCalendar) {
+            return null;
+        }
+
+        $jobCalendar->date = $request['date'];
+        $jobCalendar->day = $request['day'];
+        $jobCalendar->description = isset($request['description']) ? $request['description'] : null;
+        $jobCalendar->save();
+
         return $jobCalendar;
     }
 
-    public function updateJobCalendarGroupUses($request, $id)
+    public function updateJobCalendars($request, $id)
     {
         try {
-            DB::beginTransaction();
-            $jobCalendar = JobCalendar::find($id);
+            // DB::beginTransaction();
+            $jobCalendarGroupUses = new JobCalendarGroupUses();
+            $jobCalendar = $this->updateJobCalendar($id, $request);
             if (!$jobCalendar) {
-                return response()->json([
-                    'message' => 'Update error',
-                    'status' => 1,
-                    'error' => [],
-                    'data' => [],
-                ]);
+                return null;
             }
-
-            $jobCalendar->date = $request['date'];
-            $jobCalendar->day = $request['day'];
-            $jobCalendar->description = isset($request['description']) ? $request['description'] : null;
-            $jobCalendar->save();
 
             $checkRemove = false;
             $checkUpdate = false;
@@ -56,8 +86,7 @@ class JobCalendar extends Model
                 $checkRemove = true;
             } else {
                 foreach ($groupUserIdRemove as $key => $value) {
-                    $removeIteam[$key] = JobCalendarGroupUses::where('group_user_id', $value)
-                        ->where('job_calendar_id', $jobCalendar->id)->delete();
+                    $removeIteam[$key] = $jobCalendarGroupUses->deleteCalendarGroupUses($value, $jobCalendar->id);
                     if ($removeIteam[$key]) {
                         $checkRemove = true;
                     } else {
@@ -68,22 +97,11 @@ class JobCalendar extends Model
 
             $groupUserId = isset($request['group_user_id']) ? $request['group_user_id'] : [];
             foreach ($groupUserId as $key => $value) {
-                $iteam[$key] = JobCalendarGroupUses::where('group_user_id', $value)->where('job_calendar_id', $jobCalendar->id)->first();
+                $iteam[$key] = $jobCalendarGroupUses->updateJobCalendarGroupUses($value, $jobCalendar->id, $request);
                 if ($iteam[$key]) {
-                    $iteam[$key]->coefficient = $request['coefficient'];
-                    $iteam[$key]->start = $request['start'];
-                    $iteam[$key]->end = $request['end'];
-                    $iteam[$key]->save();
                     $checkUpdate = true;
                 } else {
-                    $iteam[$key] = JobCalendarGroupUses::create([
-                        'id' => uniqid(null, true),
-                        'group_user_id' => $value,
-                        'job_calendar_id' => $jobCalendar->id,
-                        'coefficient' => $request['coefficient'],
-                        'start' => $request['start'],
-                        'end' => $request['end'],
-                    ]);
+                    $iteam[$key] = $jobCalendarGroupUses->createJobCalendarGroupUses($value, $jobCalendar->id, $request);
                     if ($iteam[$key]) {
                         $checkUpdate = true;
                     } else {
@@ -93,31 +111,16 @@ class JobCalendar extends Model
             }
 
             if (!$checkRemove || !$checkUpdate) {
-                return response()->json([
-                    'message' => 'Update error',
-                    'status' => 1,
-                    'error' => [],
-                    'data' => [],
-                ]);
+                return null;
             }
 
-            DB::commit();
-            return response()->json([
-                'message' => 'Update success',
-                'status' => 0,
-                'error' => [],
-                'data' => ['jobCalendar' => $jobCalendar, 'jobCalendarGroupUsers' => $iteam],
-            ]);
+            // DB::commit();
+            return ['jobCalendar' => $jobCalendar, 'jobCalendarGroupUsers' => $iteam];
 
         } catch (\Exception $e) {
-            DB::rollBack();
-            // return $e->getMessage();
-            return response()->json([
-                'message' => 'Update error',
-                'status' => 1,
-                'error' => [],
-                'data' => [],
-            ]);
+            // DB::rollBack();
+            return $e->getMessage();
+
         }
 
     }
@@ -126,66 +129,32 @@ class JobCalendar extends Model
     {
         try {
             DB::beginTransaction();
-            $jobCalendar = JobCalendar::create([
-                'id' => uniqid(null, true),
-                'date' => $request['date'],
-                'day' => $request['day'],
-                'description' => isset($request['description']) ? $request['description'] : null,
-            ]);
-
-            if (!$jobCalendar) {
-                return response()->json([
-                    'message' => 'Create error',
-                    'status' => 1,
-                    'error' => [],
-                    'data' => [],
-                ]);
+            $jobCalendar = $this->createJobCalendar($request);
+            if ($jobCalendar) {
+                return null;
             }
 
             $groupUserId = $request['group_user_id'];
             $check = false;
             $iteam = [];
+            $jobCalendarGroupUses = new JobCalendarGroupUses();
             foreach ($groupUserId as $key => $value) {
-                $iteam[$key] = JobCalendarGroupUses::create([
-                    'id' => uniqid(null, true),
-                    'group_user_id' => $value,
-                    'job_calendar_id' => $jobCalendar->id,
-                    'coefficient' => $request['coefficient'],
-                    'start' => $request['start'],
-                    'end' => $request['end'],
-                ]);
+                $iteam[$key] = $jobCalendarGroupUses->createJobCalendarGroupUses($value, $jobCalendar->id, $request);
                 if ($iteam[$key]) {
                     $check = true;
                 }
-
             }
 
             if (!$check) {
-                return response()->json([
-                    'message' => 'Create error',
-                    'status' => 1,
-                    'error' => [],
-                    'data' => [],
-                ]);
+                return null;
             }
 
             DB::commit();
-            return response()->json([
-                'message' => 'Create success',
-                'status' => 0,
-                'error' => [],
-                'data' => ['jobCalendar' => $jobCalendar->toArray(), 'jobCalendarGroupUsers' => $iteam],
-            ]);
+            return ['jobCalendar' => $jobCalendar->toArray(), 'jobCalendarGroupUsers' => $iteam];
 
         } catch (\Exception $e) {
             DB::rollBack();
-            // return $e->getMessage();
-            return response()->json([
-                'message' => 'Create error',
-                'status' => 1,
-                'error' => [],
-                'data' => [],
-            ]);
+            return null;
         }
 
     }
@@ -193,26 +162,35 @@ class JobCalendar extends Model
     public function destroyJobCalendar($id)
     {
         try {
-
-            $jobCalendar = JobCalendar::find($id);
+            $jobCalendar = JobCalendar::destroy($id);
             if (!$jobCalendar) {
-                return response()->json([
-                    'message' => 'Delete error',
-                    'status' => 1,
-                    'error' => [],
-                    'data' => [],
-                ]);
+                return null;
             }
-            return response()->json([
-                'message' => 'Delete success',
-                'status' => 0,
-                'error' => [],
-                'data' => $jobCalendar,
-            ]);
-
+            return $jobCalendar;
         } catch (\Exception $e) {
-            return $e->getMessage();
+            // return $e->getMessage();
+            return null;
         }
+    }
+
+    public function returnMessageError($message = null)
+    {
+        return response()->json([
+            'message' => isset($message) ? $message : 'error',
+            'status' => 1,
+            'error' => [],
+            'data' => [],
+        ]);
+    }
+
+    public function returnMessagesuccess($message = null, $data)
+    {
+        return response()->json([
+            'message' => isset($message) ? $message : 'Success',
+            'status' => 0,
+            'error' => [],
+            'data' => $data,
+        ]);
     }
 
 }

@@ -44,7 +44,22 @@ class JobCalendarController extends Controller
     public function store(GroupUsersRequests $request)
     {
         if ($request->isMethod('post')) {
-            return $this->jobCalendar->createJobCalendarGroupUses($request->all());
+            $data = $this->jobCalendar->createJobCalendarGroupUses($request->all());
+            if (($data)) {
+                return response()->json([
+                    'message' => 'Create success',
+                    'status' => 0,
+                    'error' => [],
+                    'data' => $data,
+                ]);
+            } else {
+                return response()->json([
+                    'message' => 'Create error',
+                    'status' => 1,
+                    'error' => [],
+                    'data' => $data,
+                ]);
+            }
         }
 
     }
@@ -80,9 +95,22 @@ class JobCalendarController extends Controller
      */
     public function update(GroupUsersRequests $request, $id)
     {
-        if ($request->isMethod('put')) {
-            return $this->jobCalendar->updateJobCalendarGroupUses($request->all(), $id);
+        $data = $this->jobCalendar->updateJobCalendars($request->all(), $id);
+        if ($data) {
+            return response()->json([
+                'message' => 'Update success',
+                'status' => 0,
+                'error' => [],
+                'data' => $data,
+            ]);
         }
+
+        return response()->json([
+            'message' => 'Update error',
+            'status' => 0,
+            'error' => [],
+            'data' => $data,
+        ]);
     }
 
     /**
@@ -93,6 +121,22 @@ class JobCalendarController extends Controller
      */
     public function destroy($id)
     {
-        return $this->jobCalendar->destroyJobCalendar($id);
+        $data = $this->jobCalendar->destroyJobCalendar($id);
+        if ($data) {
+            return response()->json([
+                'message' => 'Delete success',
+                'status' => 0,
+                'error' => [],
+                'data' => $data,
+            ]);
+        }
+
+        return response()->json([
+            'message' => 'Delete error',
+            'status' => 0,
+            'error' => [],
+            'data' => $data,
+        ]);
+
     }
 }
