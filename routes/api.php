@@ -20,9 +20,12 @@ Route::middleware(['auth:api'])->group(function () {
     Route::post('/me', 'UserController@me');
     Route::get('/get-list-users', 'UserController@index');
     Route::post('/roles', 'RolesController@store');
-    Route::post('/create-group-users', 'Api\GroupUsersController@store');
+    
     Route::post('/create-job-calendar', 'Api\JobCalendarController@store');
     Route::put('/update-job-calendar/{id}', 'Api\JobCalendarController@update');
+    Route::delete('/delete-job-calendar/{id}', 'Api\JobCalendarController@destroy');
+
+    Route::post('/create-group-users', 'Api\GroupUsersController@store');
     Route::put('/update-group-users/{id}', 'Api\GroupUsersController@update');
     Route::get('/details-group-users/{id}', 'Api\GroupUsersController@show');
     Route::get('/get-list-group-users', 'Api\GroupUsersController@getListGroupUsers');

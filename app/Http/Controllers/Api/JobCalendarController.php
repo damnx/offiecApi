@@ -44,7 +44,7 @@ class JobCalendarController extends Controller
     public function store(GroupUsersRequests $request)
     {
         if ($request->isMethod('post')) {
-            return  $this->jobCalendar->createJobCalendarGroupUses($request->all());
+            return $this->jobCalendar->createJobCalendarGroupUses($request->all());
         }
 
     }
@@ -93,6 +93,6 @@ class JobCalendarController extends Controller
      */
     public function destroy($id)
     {
-        //
+        return $this->jobCalendar->destroyJobCalendar($id);
     }
 }
