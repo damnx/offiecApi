@@ -24,7 +24,7 @@ class GroupUsersRequests extends FormRequest
     public function rules()
     {
         $id = isset(request()->id) ? request()->id : null;
-
+        
         $rules = [
             'date' => 'required|max:10|unique:job_calendar,date,' . $id,
             'day' => 'required|max:2',
@@ -41,7 +41,7 @@ class GroupUsersRequests extends FormRequest
         } else {
             $rules['group_user_id'] = 'required|array';
         }
-
+        
         if ($id) {
             $groupUserIdRemove = request()->group_user_id_remove;
             if (is_array($groupUserIdRemove)) {

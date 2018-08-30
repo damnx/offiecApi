@@ -16,26 +16,31 @@ class JobCalendarGroupUses extends Model
         'id', 'coefficient', 'start', 'end', 'job_calendar_id', 'group_user_id',
     ];
 
-    public function createJobCalendarGroupUses($value, $jobCalendarId, $request)
+    public function createOrUpdateJobCalendarGroupUses($groupUserId, $jobCalendarId, $request)
     {
+        // create or update
         try {
-            $jobCalendarGroupUsess = JobCalendarGroupUses::firstOrCreate(['group_user_id'=>$value,'job_calendar_id'=>$jobCalendarId]);
-            var_dump( $jobCalendarGroupUsess->toArray());
-            $jobCalendarGroupUses = JobCalendarGroupUses::create([
-                'id' => uniqid(null, true),
-                'group_user_id' => $value,
-                'job_calendar_id' => $jobCalendarId,
-                'coefficient' => $request['coefficient'],
-                'start' => $request['start'],
-                'end' => $request['end'],
-            ]);
+            $jobCalendarGroupUses = jobCalendarGroupUses::firstOrNew(['group_user_id' => $groupUserId, 'job_calendar_id' => $jobCalendarId]);
+            if (!$jobCalendarGroupUses->exists) {
+                // create
+                $jobCalendarGroupUses->id = uniqid(null, true);
+                $jobCalendarGroupUses->coefficient = $request['coefficient'];
+                $jobCalendarGroupUses->start = $request['start'];
+                $jobCalendarGroupUses->end = $request['end'];
+                $jobCalendarGroupUses->save();
+            } else {
+                // update
+                $jobCalendarGroupUses->coefficient = $request['coefficient'];
+                $jobCalendarGroupUses->start = $request['start'];
+                $jobCalendarGroupUses->end = $request['end'];
+                $jobCalendarGroupUses->save();
+            }
 
             return $jobCalendarGroupUses;
         } catch (\Exception $e) {
             // return $e->getMessage();
             return null;
         }
-
     }
 
     public function firstJobCalendarGroupUses($groupUserId, $jobCalendarId)
@@ -50,28 +55,7 @@ class JobCalendarGroupUses extends Model
 
     }
 
-    public function updateJobCalendarGroupUses($groupUserId, $jobCalendarId, $request)
-    {
-        try {
-            $iteam = $this->firstJobCalendarGroupUses($groupUserId, $jobCalendarId);
-            if (!$iteam) {
-                return null;
-            }
-
-            $iteam->coefficient = $request['coefficient'];
-            $iteam->start = $request['start'];
-            $iteam->end = $request['end'];
-            $iteam->save();
-            return $iteam;
-
-        } catch (\Exception $e) {
-            // return $e->getMessage();
-            return null;
-        }
-
-    }
-
-    public function deleteCalendarGroupUses($groupUserId, $jobCalendarId)
+    public function deleteJobCalendarGroupUses($groupUserId, $jobCalendarId)
     {
         try {
             $jobCalendarGroupUses = $this->firstJobCalendarGroupUses($groupUserId, $jobCalendarId);

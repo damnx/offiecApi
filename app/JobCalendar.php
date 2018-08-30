@@ -35,45 +35,57 @@ class JobCalendar extends Model
 
     }
 
-    // create jobCalendar
     public function createJobCalendar($request)
     {
         try {
             $jobCalendar = JobCalendar::create([
-                'id' => uniqid(null, true),
                 'date' => $request['date'],
                 'day' => $request['day'],
                 'description' => isset($request['description']) ? $request['description'] : null,
+                'id' => uniqid(null, true),
             ]);
             return $jobCalendar;
-
         } catch (\Exception $e) {
             return null;
         }
 
     }
 
-    public function updateJobCalendar($id, $request)
+    public function updateJobCalendar($id)
     {
-        $jobCalendar = $this->getFindJobCalendar($id);
-        if (!$jobCalendar) {
+        try {
+            $jobCalendar = $this->getFindJobCalendar($id);
+            
+            return $jobCalendar;
+        } catch (\Exception $e) {
             return null;
         }
 
-        $jobCalendar->date = $request['date'];
-        $jobCalendar->day = $request['day'];
-        $jobCalendar->description = isset($request['description']) ? $request['description'] : null;
-        $jobCalendar->save();
+    }
 
-        return $jobCalendar;
+    public function createOrUpdateJobCalendar($request, $id = null)
+    {
+        try {
+            $jobCalendar = JobCalendar::updateOrCreate([
+                'date' => $request['date'],
+            ], [
+                'day' => $request['day'],
+                'description' => isset($request['description']) ? $request['description'] : null,
+                'id' => isset($id) ? $id : uniqid(null, true),
+            ]);
+            return $jobCalendar;
+        } catch (\Exception $e) {
+            return null;
+        }
+
     }
 
     public function updateJobCalendars($request, $id)
     {
         try {
-            // DB::beginTransaction();
+            DB::beginTransaction();
             $jobCalendarGroupUses = new JobCalendarGroupUses();
-            $jobCalendar = $this->updateJobCalendar($id, $request);
+            $jobCalendar = $this->createOrUpdateJobCalendar($request, $id);
             if (!$jobCalendar) {
                 return null;
             }
@@ -86,7 +98,7 @@ class JobCalendar extends Model
                 $checkRemove = true;
             } else {
                 foreach ($groupUserIdRemove as $key => $value) {
-                    $removeIteam[$key] = $jobCalendarGroupUses->deleteCalendarGroupUses($value, $jobCalendar->id);
+                    $removeIteam[$key] = $jobCalendarGroupUses->deleteJobCalendarGroupUses($value, $jobCalendar->id);
                     if ($removeIteam[$key]) {
                         $checkRemove = true;
                     } else {
@@ -97,16 +109,11 @@ class JobCalendar extends Model
 
             $groupUserId = isset($request['group_user_id']) ? $request['group_user_id'] : [];
             foreach ($groupUserId as $key => $value) {
-                $iteam[$key] = $jobCalendarGroupUses->updateJobCalendarGroupUses($value, $jobCalendar->id, $request);
+                $iteam[$key] = $jobCalendarGroupUses->createOrUpdateJobCalendarGroupUses($value, $jobCalendar->id, $request);
                 if ($iteam[$key]) {
                     $checkUpdate = true;
                 } else {
-                    $iteam[$key] = $jobCalendarGroupUses->createJobCalendarGroupUses($value, $jobCalendar->id, $request);
-                    if ($iteam[$key]) {
-                        $checkUpdate = true;
-                    } else {
-                        $checkUpdate = false;
-                    }
+                    $checkUpdate = false;
                 }
             }
 
@@ -114,11 +121,11 @@ class JobCalendar extends Model
                 return null;
             }
 
-            // DB::commit();
+            DB::commit();
             return ['jobCalendar' => $jobCalendar, 'jobCalendarGroupUsers' => $iteam];
 
         } catch (\Exception $e) {
-            // DB::rollBack();
+            DB::rollBack();
             return $e->getMessage();
 
         }
@@ -130,7 +137,7 @@ class JobCalendar extends Model
         try {
             DB::beginTransaction();
             $jobCalendar = $this->createJobCalendar($request);
-            if ($jobCalendar) {
+            if (!$jobCalendar) {
                 return null;
             }
             $groupUserId = $request['group_user_id'];
@@ -138,7 +145,7 @@ class JobCalendar extends Model
             $iteam = [];
             $jobCalendarGroupUses = new JobCalendarGroupUses();
             foreach ($groupUserId as $key => $value) {
-                $iteam[$key] = $jobCalendarGroupUses->createJobCalendarGroupUses($value, $jobCalendar->id, $request);
+                $iteam[$key] = $jobCalendarGroupUses->createOrUpdateJobCalendarGroupUses($value, $jobCalendar->id, $request);
                 if ($iteam[$key]) {
                     $check = true;
                 }
@@ -153,7 +160,8 @@ class JobCalendar extends Model
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return null;
+            // return null;
+            return $e->getMessage();
         }
 
     }
@@ -170,26 +178,6 @@ class JobCalendar extends Model
             // return $e->getMessage();
             return null;
         }
-    }
-
-    public function returnMessageError($message = null)
-    {
-        return response()->json([
-            'message' => isset($message) ? $message : 'error',
-            'status' => 1,
-            'error' => [],
-            'data' => [],
-        ]);
-    }
-
-    public function returnMessagesuccess($message = null, $data)
-    {
-        return response()->json([
-            'message' => isset($message) ? $message : 'Success',
-            'status' => 0,
-            'error' => [],
-            'data' => $data,
-        ]);
     }
 
 }

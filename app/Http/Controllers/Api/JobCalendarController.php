@@ -25,6 +25,13 @@ class JobCalendarController extends Controller
         //
     }
 
+    public function test(Request $request)
+    {
+        $data = $this->jobCalendar->createOrUpdateJobCalendar($request);
+        var_dump($data);
+        
+    }
+
     /**
      * Show the form for creating a new resource.
      *

@@ -15,7 +15,7 @@
 //     return $request->user();
 // });
 Route::post('/register', 'UserController@store');
-Route::get('/test', 'CalendarControllerWork@test');
+Route::get('/test', 'Api\JobCalendarController@test');
 Route::middleware(['auth:api'])->group(function () {
     Route::post('/me', 'UserController@me');
     Route::get('/get-list-users', 'UserController@index');
@@ -31,6 +31,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/get-list-group-users', 'Api\GroupUsersController@getListGroupUsers');
     Route::delete('/delete-group-users/{id}', 'Api\GroupUsersController@destroy');
     Route::delete('/restore-group-users/{id}', 'Api\GroupUsersController@restoreGroupUsers');
+   
 
     // Route::post('/create-date-saturday-working-full', 'SaturdayFullController@store');
     // Route::get('/get-date-saturday-working-full/{type}', 'SaturdayFullController@getSaturdayFullController');
