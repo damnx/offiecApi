@@ -15,7 +15,7 @@ class GroupUsersTable extends Migration
     {
         Schema::create('group_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('name', 100)->unique();
+            $table->string('name', 100);
             $table->longText('description')->nullable($value = true);
             $table->enum('status', ['public ', 'pending']);
             $table->timestamps();

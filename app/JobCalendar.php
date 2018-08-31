@@ -51,11 +51,19 @@ class JobCalendar extends Model
 
     }
 
-    public function updateJobCalendar($id)
+    public function updateJobCalendar($request, $id)
     {
         try {
             $jobCalendar = $this->getFindJobCalendar($id);
-            
+            if (!$jobCalendar) {
+                return null;
+            }
+
+            $jobCalendar->date = $request['date'];
+            $jobCalendar->day = $request['day'];
+            $jobCalendar->description = isset($request['description']) ? $request['description'] : null;
+            $jobCalendar->save();
+
             return $jobCalendar;
         } catch (\Exception $e) {
             return null;
@@ -85,7 +93,7 @@ class JobCalendar extends Model
         try {
             DB::beginTransaction();
             $jobCalendarGroupUses = new JobCalendarGroupUses();
-            $jobCalendar = $this->createOrUpdateJobCalendar($request, $id);
+            $jobCalendar = $this->updateJobCalendar($request, $id);
             if (!$jobCalendar) {
                 return null;
             }
@@ -126,7 +134,8 @@ class JobCalendar extends Model
 
         } catch (\Exception $e) {
             DB::rollBack();
-            return $e->getMessage();
+            return null;
+            // return $e->getMessage();
 
         }
 

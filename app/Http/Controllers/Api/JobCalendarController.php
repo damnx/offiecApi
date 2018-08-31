@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\GroupUsersRequests;
+use App\Http\Requests\JobCalendarRequests;
 use App\JobCalendar;
 use Illuminate\Http\Request;
 
@@ -29,7 +29,7 @@ class JobCalendarController extends Controller
     {
         $data = $this->jobCalendar->createOrUpdateJobCalendar($request);
         var_dump($data);
-        
+
     }
 
     /**
@@ -48,25 +48,24 @@ class JobCalendarController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(GroupUsersRequests $request)
+    public function store(JobCalendarRequests $request)
     {
         if ($request->isMethod('post')) {
             $data = $this->jobCalendar->createJobCalendarGroupUses($request->all());
-            if (($data)) {
+            if ($data) {
                 return response()->json([
                     'message' => 'Create success',
                     'status' => 0,
                     'error' => [],
                     'data' => $data,
                 ]);
-            } else {
-                return response()->json([
-                    'message' => 'Create error',
-                    'status' => 1,
-                    'error' => [],
-                    'data' => $data,
-                ]);
             }
+            return response()->json([
+                'message' => 'Create error',
+                'status' => 1,
+                'error' => [],
+                'data' => [],
+            ]);
         }
 
     }
@@ -100,7 +99,7 @@ class JobCalendarController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(GroupUsersRequests $request, $id)
+    public function update(JobCalendarRequests $request, $id)
     {
         $data = $this->jobCalendar->updateJobCalendars($request->all(), $id);
         if ($data) {
@@ -116,7 +115,7 @@ class JobCalendarController extends Controller
             'message' => 'Update error',
             'status' => 0,
             'error' => [],
-            'data' => $data,
+            'data' => [],
         ]);
     }
 
@@ -142,7 +141,7 @@ class JobCalendarController extends Controller
             'message' => 'Delete error',
             'status' => 0,
             'error' => [],
-            'data' => $data,
+            'data' => [],
         ]);
 
     }

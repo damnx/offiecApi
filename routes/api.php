@@ -30,7 +30,7 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/details-group-users/{id}', 'Api\GroupUsersController@show');
     Route::get('/get-list-group-users', 'Api\GroupUsersController@getListGroupUsers');
     Route::delete('/delete-group-users/{id}', 'Api\GroupUsersController@destroy');
-    Route::delete('/restore-group-users/{id}', 'Api\GroupUsersController@restoreGroupUsers');
+    // Route::delete('/restore-group-users/{id}', 'Api\GroupUsersController@restoreGroupUsers');
    
 
     // Route::post('/create-date-saturday-working-full', 'SaturdayFullController@store');

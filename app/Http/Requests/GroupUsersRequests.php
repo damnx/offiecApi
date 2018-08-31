@@ -23,46 +23,16 @@ class GroupUsersRequests extends FormRequest
      */
     public function rules()
     {
-        $id = isset(request()->id) ? request()->id : null;
-        
+        // $id = isset(request()->id) ? request()->id : 'NULL';
         $rules = [
-            'date' => 'required|max:10|unique:job_calendar,date,' . $id,
-            'day' => 'required|max:2',
-            'coefficient' => 'required|numeric|min:0|max:3',
-            'start' => 'required|date_format:H:i:s',
-            'end' => 'required|date_format:H:i:s',
+            'name' => 'required|max:100|unique:group_users,name,NULL,id,deleted_at,NULL',
+            'status' => 'required',
         ];
-
-        $groupUserId = request()->group_user_id;
-        if (is_array($groupUserId)) {
-            foreach ($groupUserId as $key => $value) {
-                $rules['group_user_id.' . $key] = 'required';
-            }
-        } else {
-            $rules['group_user_id'] = 'required|array';
-        }
-        
-        if ($id) {
-            $groupUserIdRemove = request()->group_user_id_remove;
-            if (is_array($groupUserIdRemove)) {
-                foreach ($groupUserIdRemove as $key => $value) {
-                    $rules['group_user_id_remove.' . $key] = 'required';
-                }
-            }
-
-        }
+        // print_r($rules);
+        // die();
 
         return $rules;
 
     }
-    //customize messages
-    public function messages()
-    {
-        $messages = [
-            'required' => 'The :attribute field is required.',
-            'date_format' => 'The :attribute does not match the format time.',
-        ];
 
-        return $messages;
-    }
 }
