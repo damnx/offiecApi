@@ -15,9 +15,9 @@
 //     return $request->user();
 // });
 Route::post('/register', 'UserController@store');
-Route::get('/test', 'Api\JobCalendarController@test');
+Route::get('/test', 'UserController@test');
 Route::middleware(['auth:api'])->group(function () {
-    Route::post('/me', 'UserController@me');
+    Route::post('/me', 'Api\UserController@me');
     Route::get('/get-list-users', 'UserController@index');
     Route::post('/roles', 'RolesController@store');
     

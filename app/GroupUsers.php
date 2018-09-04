@@ -25,6 +25,11 @@ class GroupUsers extends Model
         return $this->hasMany('App\User', 'group_user_id', 'id');
     }
 
+    public function jobCalendar()
+    {
+        return $this->belongsToMany('App\JobCalendar', 'job_calendar_group_user', 'group_user_id', 'job_calendar_id')->withPivot('coefficient', 'start','end');
+    }
+
     public function getFind($id)
     {
         try {

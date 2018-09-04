@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
 use App\User;
+use App\GroupUsers;
 use Illuminate\Http\Request;
 use Validator;
 
@@ -167,4 +168,20 @@ class UserController extends Controller
     {
         //
     }
+
+    // public function test(){
+    //    $data = User::with('groupUser','groupUsersJobCalendar')->get();
+
+    //    return response()->json($data);
+    // }
+
+    public function test(){
+     
+        $callback = function($query) {
+            $query->where('status', 'public');
+        };
+        
+        $test = User::whereHas('groupUser',$callback)->with('groupUser','groupUser.jobCalendar')->get();
+        return response()->json($test);
+     }
 }

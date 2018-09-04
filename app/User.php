@@ -16,9 +16,14 @@ class User extends Authenticatable
      *
      * @var array
      */
+    
+    protected $primaryKey = 'id';
+    public $incrementing = false;
+
     protected $fillable = [
-        'name', 'email', 'password', 'address', 'gender', 'phone_number', 'is_active',
+        'name', 'email', 'password', 'address', 'gender', 'phone_number', 'is_active','is_sadmin',
     ];
+
 
     /**
      * The attributes that should be hidden for arrays.
@@ -37,6 +42,7 @@ class User extends Authenticatable
     // mối quan hệ users  với group users 
     public function groupUser()
     {
-        return $this->belongsTo('App\GroupUser', 'group_user_id', 'id');
+        return $this->belongsTo('App\GroupUsers', 'group_user_id', 'id');
     }
+
 }

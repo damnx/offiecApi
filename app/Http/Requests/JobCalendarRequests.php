@@ -23,7 +23,7 @@ class JobCalendarRequests extends FormRequest
      */
     public function rules()
     {
-        // $id = isset(request()->id) ? request()->id : null;
+        $id = isset(request()->id) ? request()->id : null;
 
         $rules = [
             'date' => 'required|max:10|unique:job_calendar,date,NULL,id,deleted_at,NULL',

@@ -19,7 +19,7 @@ class JobCalendar extends Model
         'id', 'date', 'day', 'description',
     ];
 
-    public function groupUsers()
+    public function GroupUsers()
     {
         return $this->belongsToMany('App\GroupUsers', 'job_calendar_group_user', 'job_calendar_id', 'group_user_id');
     }

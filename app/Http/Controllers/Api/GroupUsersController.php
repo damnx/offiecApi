@@ -77,28 +77,28 @@ class GroupUsersController extends Controller
     {
         // get list group users kèm theo điều kiện tìm kiếm và phân trang
         $whereData = [];
-        $name = trim($request->input('name'));
-        $status = trim($request->input('status'));
-
-        if ($name) {
-            $whereData[] = ['name', 'like', $name . '%'];
-        }
-
-        if ($status) {
-            $whereData[] = ['status', $status];
-        }
-
-        $data = $this->groupUsers->listGroupUsers($whereData);
-        if (!$data) {
-            abort(404);
-        }
-        return response()->json([
-            'message' => 'Success',
-            'status' => 0,
-            'error' => [],
-            'data' => $data,
-        ]);
-
+            $name = trim($request->input('name'));
+            $status = trim($request->input('status'));
+    
+            if ($name) {
+                $whereData[] = ['name', 'like', $name . '%'];
+            }
+    
+            if ($status) {
+                $whereData[] = ['status', $status];
+            }
+    
+            $data = $this->groupUsers->listGroupUsers($whereData);
+            // if (!$data) {
+            //     abort(404);
+            // }
+            return response()->json([
+                'message' => 'Success',
+                'status' => 0,
+                'error' => [],
+                'data' => $data,
+            ]);
+       
     }
 
     public function show($id)
@@ -156,6 +156,7 @@ class GroupUsersController extends Controller
                 'data' => [],
             ]);
         }
+
     }
 
     /**
@@ -188,4 +189,6 @@ class GroupUsersController extends Controller
     {
 
     }
+
+   
 }
