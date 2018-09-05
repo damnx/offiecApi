@@ -14,7 +14,7 @@ class GroupUsersTable extends Migration
     public function up()
     {
         Schema::create('group_users', function (Blueprint $table) {
-            $table->increments('id');
+            $table->uuid('id');
             $table->string('name', 100);
             $table->longText('description')->nullable($value = true);
             $table->enum('status', ['public ', 'pending']);

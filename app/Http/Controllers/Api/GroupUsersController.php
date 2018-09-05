@@ -105,6 +105,9 @@ class GroupUsersController extends Controller
     {
         //
         $detailsGroupUsers = $this->groupUsers->detailsGroupUsers($id);
+
+        // $this->authorize($detailsGroupUsers,'view');
+
         if (!$detailsGroupUsers) {
             abort(404);
         }

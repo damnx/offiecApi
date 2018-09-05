@@ -9,7 +9,6 @@ use Illuminate\Support\Facades\DB;
 
 class JobCalendar extends Model
 {
-
     use SoftDeletes;
     protected $table = 'job_calendar';
     protected $primaryKey = 'id';
@@ -169,8 +168,8 @@ class JobCalendar extends Model
 
         } catch (\Exception $e) {
             DB::rollBack();
-            // return null;
-            return $e->getMessage();
+            return null;
+            // return $e->getMessage();
         }
 
     }

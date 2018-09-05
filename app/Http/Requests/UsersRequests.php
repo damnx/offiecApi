@@ -14,6 +14,7 @@ class UsersRequests extends FormRequest
     public function authorize()
     {
         return true;
+        // return Gate::allows('update-posts');
     }
 
     /**
@@ -24,11 +25,10 @@ class UsersRequests extends FormRequest
     public function rules()
     {
         return [
-            'email' => 'required|email|unique:users,email,NULL,id,deleted_at,NULL',
-            'password' => 'required',
-            'full_name' => 'required',
-            'address' => 'required',
-            'gender' => 'required|numeric',
+            'email' => 'required|max:255|email|unique:users,email,NULL,id,deleted_at,NULL',
+            'password' => 'required|max:255',
+            'full_name' => 'required|max:255',
+            'address' => 'required|max:255',
         ];
     }
 }

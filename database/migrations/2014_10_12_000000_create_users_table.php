@@ -19,7 +19,7 @@ class CreateUsersTable extends Migration
             $table->string('email')->unique();
             $table->string('password');
             $table->string('address')->nullable($value = true);
-            $table->tinyInteger('gender');
+            $table->tinyInteger('gender')->default(0)->comment('0=>giới tính khác,1=>Nam,2=>Nữ');
             $table->string('level')->nullable($value = true);
             $table->string('phone_number', 11);
             $table->tinyInteger('is_sadmin')->nullable($value = true);

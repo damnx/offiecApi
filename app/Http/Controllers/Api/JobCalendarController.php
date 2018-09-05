@@ -24,14 +24,7 @@ class JobCalendarController extends Controller
     {
         //
     }
-
-    public function test(Request $request)
-    {
-        $data = $this->jobCalendar->createOrUpdateJobCalendar($request);
-        var_dump($data);
-
-    }
-
+    
     /**
      * Show the form for creating a new resource.
      *
@@ -113,7 +106,7 @@ class JobCalendarController extends Controller
 
         return response()->json([
             'message' => 'Update error',
-            'status' => 0,
+            'status' => 1,
             'error' => [],
             'data' => [],
         ]);
@@ -139,7 +132,7 @@ class JobCalendarController extends Controller
 
         return response()->json([
             'message' => 'Delete error',
-            'status' => 0,
+            'status' => 1,
             'error' => [],
             'data' => [],
         ]);

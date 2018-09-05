@@ -8,8 +8,10 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 class GroupUsers extends Model
 {
     //
-    use SoftDeletes;
+    
     // SoftDeletes xóa mền trong database
+    use SoftDeletes;
+
     protected $table = 'group_users';
 
     protected $primaryKey = 'id';
