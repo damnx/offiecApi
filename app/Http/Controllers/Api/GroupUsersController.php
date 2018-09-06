@@ -47,6 +47,7 @@ class GroupUsersController extends Controller
     public function store(GroupUsersRequests $request)
     {
         if ($request->isMethod('post')) {
+            // $this->authorize('createssss');
             $data = $this->groupUsers->createGroupUsers($request);
             if ($data) {
                 return response()->json([
@@ -77,28 +78,28 @@ class GroupUsersController extends Controller
     {
         // get list group users kèm theo điều kiện tìm kiếm và phân trang
         $whereData = [];
-            $name = trim($request->input('name'));
-            $status = trim($request->input('status'));
-    
-            if ($name) {
-                $whereData[] = ['name', 'like', $name . '%'];
-            }
-    
-            if ($status) {
-                $whereData[] = ['status', $status];
-            }
-    
-            $data = $this->groupUsers->listGroupUsers($whereData);
-            // if (!$data) {
-            //     abort(404);
-            // }
-            return response()->json([
-                'message' => 'Success',
-                'status' => 0,
-                'error' => [],
-                'data' => $data,
-            ]);
-       
+        $name = trim($request->input('name'));
+        $status = trim($request->input('status'));
+
+        if ($name) {
+            $whereData[] = ['name', 'like', $name . '%'];
+        }
+
+        if ($status) {
+            $whereData[] = ['status', $status];
+        }
+
+        $data = $this->groupUsers->listGroupUsers($whereData);
+        // if (!$data) {
+        //     abort(404);
+        // }
+        return response()->json([
+            'message' => 'Success',
+            'status' => 0,
+            'error' => [],
+            'data' => $data,
+        ]);
+
     }
 
     public function show($id)
@@ -106,7 +107,7 @@ class GroupUsersController extends Controller
         //
         $detailsGroupUsers = $this->groupUsers->detailsGroupUsers($id);
 
-        // $this->authorize($detailsGroupUsers,'view');
+        $this->authorize('view', $detailsGroupUsers);
 
         if (!$detailsGroupUsers) {
             abort(404);
@@ -193,5 +194,4 @@ class GroupUsersController extends Controller
 
     }
 
-   
 }

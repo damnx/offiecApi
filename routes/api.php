@@ -33,6 +33,9 @@ Route::middleware(['auth:api'])->group(function () {
     Route::get('/details-group-users/{id}', 'Api\GroupUsersController@show');
     Route::get('/get-list-group-users', 'Api\GroupUsersController@getListGroupUsers');
     Route::delete('/delete-group-users/{id}', 'Api\GroupUsersController@destroy');
+
+    Route::post('/create-role', 'Api\RolesController@store');
+
     // Route::delete('/restore-group-users/{id}', 'Api\GroupUsersController@restoreGroupUsers');
    
 

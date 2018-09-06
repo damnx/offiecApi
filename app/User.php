@@ -2,9 +2,9 @@
 
 namespace App;
 
+use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
-use Illuminate\Database\Eloquent\SoftDeletes;
 use Laravel\Passport\HasApiTokens;
 
 class User extends Authenticatable
@@ -38,7 +38,7 @@ class User extends Authenticatable
 
     public function roles()
     {
-        return $this->hasMany('App\Roles', 'id_users', 'id');
+        return $this->belongsToMany('App\Roles', 'role_users', 'user_id', 'role_id');
     }
 
     // mối quan hệ users  với group users
@@ -60,7 +60,7 @@ class User extends Authenticatable
             ]);
             return $user;
         } catch (\Exception $e) {
-           
+
             return null;
         }
     }

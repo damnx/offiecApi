@@ -5,7 +5,7 @@ namespace App\Http\Requests;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Auth;
 
-class GroupUsersRequests extends FormRequest
+class CreateRolesRequests extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
@@ -14,7 +14,7 @@ class GroupUsersRequests extends FormRequest
      */
     public function authorize()
     {
-       return Auth::user()->can('create');
+        return Auth::user()->can('create');
     }
 
     /**
@@ -24,14 +24,19 @@ class GroupUsersRequests extends FormRequest
      */
     public function rules()
     {
-        // $id = isset(request()->id) ? request()->id : 'NULL';
         $rules = [
-            'name' => 'required|max:100|unique:group_users,name,NULL,id,deleted_at,NULL',
-            'status' => 'required',
+            'name' => 'required|max:255|unique:roles',
         ];
-       
-        return $rules;
-        
-    }
 
+        $groupUserId = request()->group_user_id;
+        if (is_array($groupUserId)) {
+            foreach ($groupUserId as $key => $value) {
+                $rules['userId.' . $key] = 'required|max:36';
+            }
+        } else {
+            $rules['userId'] = 'required|array';
+        }
+
+        return $rules;
+    }
 }

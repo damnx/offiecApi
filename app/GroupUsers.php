@@ -4,11 +4,12 @@ namespace App;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 
 class GroupUsers extends Model
 {
     //
-    
+
     // SoftDeletes xóa mền trong database
     use SoftDeletes;
 
@@ -18,7 +19,7 @@ class GroupUsers extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'name', 'description', 'status',
+        'id', 'name', 'description', 'status','creator_id',
     ];
 
     // mối quan hệ group users  với users 1- > n
@@ -29,7 +30,7 @@ class GroupUsers extends Model
 
     public function jobCalendar()
     {
-        return $this->belongsToMany('App\JobCalendar', 'job_calendar_group_user', 'group_user_id', 'job_calendar_id')->withPivot('coefficient', 'start','end');
+        return $this->belongsToMany('App\JobCalendar', 'job_calendar_group_user', 'group_user_id', 'job_calendar_id')->withPivot('coefficient', 'start', 'end');
     }
 
     public function getFind($id)
@@ -73,11 +74,13 @@ class GroupUsers extends Model
     public function createGroupUsers($request)
     {
         try {
+            $idUser = Auth::id();
             $groupUsers = GroupUsers::create([
                 'id' => uniqid(null, true),
                 'name' => $request['name'],
                 'status' => $request['status'],
                 'description' => isset($request['description']) ? $request['description'] : null,
+                'creator_id' => $idUser,
             ]);
             return $groupUsers;
         } catch (\Exception $e) {
@@ -88,6 +91,7 @@ class GroupUsers extends Model
     public function updateGroupUsers($request, $id)
     {
         try {
+            $idUser = Auth::id();
             $data = $this->getFind($id);
             if (!$data) {
                 return null;
@@ -95,6 +99,7 @@ class GroupUsers extends Model
             $data->name = $request['name'];
             $data->status = $request['status'];
             $data->description = isset($request['description']) ? $request['description'] : null;
+            $data->creator_id = $idUser;
             $data->save();
             return $data;
         } catch (\Exception $e) {
@@ -122,6 +127,5 @@ class GroupUsers extends Model
         } catch (\Exception $e) {
             return null;
         }
-
     }
 }

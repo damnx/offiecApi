@@ -36,7 +36,7 @@ class JobCalendarRequests extends FormRequest
         $groupUserId = request()->group_user_id;
         if (is_array($groupUserId)) {
             foreach ($groupUserId as $key => $value) {
-                $rules['group_user_id.' . $key] = 'required';
+                $rules['group_user_id.' . $key] = 'required|max:36';
             }
         } else {
             $rules['group_user_id'] = 'required|array';
@@ -46,7 +46,7 @@ class JobCalendarRequests extends FormRequest
             $groupUserIdRemove = request()->group_user_id_remove;
             if (is_array($groupUserIdRemove)) {
                 foreach ($groupUserIdRemove as $key => $value) {
-                    $rules['group_user_id_remove.' . $key] = 'required';
+                    $rules['group_user_id_remove.' . $key] = 'required|max:36';
                 }
             }
 

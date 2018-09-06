@@ -31,5 +31,10 @@ class AuthServiceProvider extends ServiceProvider
         // Gate::define('update-post', function ($user) {
         //     return true;
         // });
+        Gate::before(function ($user) {
+            if ($user->is_sadmin) {
+                return true;
+            }
+        });
     }
 }
