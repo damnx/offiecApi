@@ -14,7 +14,7 @@ class CreateRolesRequests extends FormRequest
      */
     public function authorize()
     {
-        return Auth::user()->can('create');
+        return true;
     }
 
     /**

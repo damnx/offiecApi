@@ -41,6 +41,21 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Roles', 'role_users', 'user_id', 'role_id');
     }
 
+    /**
+     * Checks if User has access to $permissions.
+     */
+    public function hasAccess(string $permissions): bool
+    {
+        // check if the permission in $role
+        foreach ($this->roles as $role) {
+            if (array_search($permissions, $role->permissions)) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     // mối quan hệ users  với group users
     public function groupUser()
     {

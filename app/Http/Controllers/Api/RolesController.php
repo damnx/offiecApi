@@ -3,9 +3,9 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\CreateRolesRequests;
 use App\Roles;
 use Illuminate\Http\Request;
-use App\Http\Requests\CreateRolesRequests;
 
 class RolesController extends Controller
 {
@@ -87,5 +87,11 @@ class RolesController extends Controller
     public function destroy($id)
     {
         //
+    }
+
+    public function test()
+    {
+        $roles = Roles::find('5b923a932fe618.10521885');
+        return $roles;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Providers;
 
+use App\Acl\DefinePolicies;
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
 use Laravel\Passport\Passport;
@@ -25,16 +26,15 @@ class AuthServiceProvider extends ServiceProvider
     public function boot()
     {
         $this->registerPolicies();
-
-        Passport::routes();
-
-        // Gate::define('update-post', function ($user) {
-        //     return true;
-        // });
         Gate::before(function ($user) {
             if ($user->is_sadmin) {
                 return true;
             }
         });
+
+        DefinePolicies::defineAbilities();
+
+        Passport::routes();
+
     }
 }

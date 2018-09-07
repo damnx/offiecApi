@@ -34,9 +34,9 @@ class GroupUsersPolicy
         return $groupUsers->creator_id === $user->id;
     }
 
-    public function create()
+    public function create(User $user)
     {
-        return true;
+        return $user->hasAccess('CREATE_GROUP_USRES');
     }
 
 }

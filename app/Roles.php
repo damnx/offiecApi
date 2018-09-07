@@ -20,6 +20,10 @@ class Roles extends Model
         'id', 'name', 'permissions', 'description', 'creator_id',
     ];
 
+    protected $casts = [
+        'permissions' => 'array',
+    ];
+
     public function users()
     {
         return $this->belongsToMany('App\User', 'role_users', 'role_id', 'user_id');

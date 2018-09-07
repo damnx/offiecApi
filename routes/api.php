@@ -15,10 +15,9 @@
 //     return $request->user();
 // });
 Route::post('/register', 'Api\UserController@store');
+Route::get('/test', 'Api\RolesController@test');
 
 Route::middleware(['auth:api'])->group(function () {
-
-    Route::get('/test', 'Api\UserController@test');
 
     Route::post('/me', 'Api\UserController@me');
     Route::get('/get-list-users', 'UserController@index');
