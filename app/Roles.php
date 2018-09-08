@@ -39,7 +39,7 @@ class Roles extends Model
                 'name' => $request['name'],
                 'description' => isset($request['description']) ? $request['description'] : null,
                 'creator_id' => $idUser,
-                'permissions' => isset($request['permissions']) ? $request['permissions'] : null,
+                'permissions' => isset($request['permissions']) ? array_combine($request['permissions'], $request['permissions']) : null,
             ]);
             if (!$groupUsers) {
                 return null;

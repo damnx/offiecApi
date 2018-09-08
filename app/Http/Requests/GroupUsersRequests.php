@@ -15,7 +15,7 @@ class GroupUsersRequests extends FormRequest
      */
     public function authorize()
     {
-        return Gate::allows('post.update');
+        return Gate::allows('CREATE_GROUP_USERS');
     }
 
     /**

@@ -41,25 +41,25 @@ class User extends Authenticatable
         return $this->belongsToMany('App\Roles', 'role_users', 'user_id', 'role_id');
     }
 
+    // mối quan hệ users  với group users
+    public function groupUser()
+    {
+        return $this->belongsTo('App\GroupUsers', 'group_user_id', 'id');
+    }
+
     /**
      * Checks if User has access to $permissions.
      */
-    public function hasAccess(string $permissions): bool
+    public function hasAccess(string $permissions)
     {
+      
         // check if the permission in $role
         foreach ($this->roles as $role) {
             if (array_search($permissions, $role->permissions)) {
                 return true;
             }
         }
-
         return false;
-    }
-
-    // mối quan hệ users  với group users
-    public function groupUser()
-    {
-        return $this->belongsTo('App\GroupUsers', 'group_user_id', 'id');
     }
 
     public function registerUsers($request)

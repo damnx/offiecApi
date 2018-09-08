@@ -31,12 +31,13 @@ class GroupUsersPolicy
 
     public function view(User $user, GroupUsers $groupUsers)
     {
-        return $groupUsers->creator_id === $user->id;
+        // return $groupUsers->creator_id === $user->id;
+        return $user->hasAccess('VIEW_GROUP_USERS');
     }
 
     public function create(User $user)
     {
-        return $user->hasAccess('CREATE_GROUP_USRES');
+        return $user->hasAccess('CREATE_GROUP_USERS');
     }
 
 }
