@@ -2,8 +2,8 @@
 
 namespace App\Http\Requests;
 
+use Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class CreateRolesRequests extends FormRequest
 {
@@ -14,7 +14,10 @@ class CreateRolesRequests extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if (isset(request()->id)) {
+            return Gate::allows('UPDATE_ROLES');
+        }
+        return Gate::allows('CREATE_ROLES');
     }
 
     /**
@@ -25,7 +28,7 @@ class CreateRolesRequests extends FormRequest
     public function rules()
     {
         $rules = [
-            'name' => 'required|max:255|unique:roles',
+            'name' => 'required|max:255|unique:roles,name,NULL,id,deleted_at,NULL',
         ];
 
         $groupUserId = request()->group_user_id;

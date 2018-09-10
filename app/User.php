@@ -52,7 +52,7 @@ class User extends Authenticatable
      */
     public function hasAccess(string $permissions)
     {
-      
+
         // check if the permission in $role
         foreach ($this->roles as $role) {
             if (array_search($permissions, $role->permissions)) {
@@ -60,6 +60,17 @@ class User extends Authenticatable
             }
         }
         return false;
+    }
+
+    public function getUsers($request)
+    {
+        try {
+            $user = User::with('roles')->where('email', $request['username'])->first();
+            return $user;
+        } catch (\Exception $e) {
+            return null;
+        }
+
     }
 
     public function registerUsers($request)

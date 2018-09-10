@@ -2,6 +2,7 @@
 
 namespace App;
 
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 use Illuminate\Support\Facades\Auth;
@@ -19,7 +20,7 @@ class GroupUsers extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'name', 'description', 'status','creator_id',
+        'id', 'name', 'description', 'status', 'creator_id',
     ];
 
     // mối quan hệ group users  với users 1- > n
@@ -110,8 +111,18 @@ class GroupUsers extends Model
     public function destroyGroupUsers($id)
     {
         try {
-            $groupUsers = GroupUsers::destroy($id);
-            return $groupUsers;
+            $data = $this->getFind($id);
+            if (!$data) {
+                return null;
+            }
+
+            $idUser = Auth::id();
+            $deletedAt = Carbon::now()->toDateTimeString();
+            $data->deleted_at = $deletedAt;
+            $data->creator_id = $idUser;
+            $data->save();
+            return $data;
+
         } catch (\Exception $e) {
             return null;
         }
@@ -120,10 +131,18 @@ class GroupUsers extends Model
     public function restoreGroupUsers($id)
     {
         try {
-            $withTrashedGroupUsers = GroupUsers::withTrashed()
-                ->where('id', $id)
-                ->restore();
-            return $withTrashedGroupUsers;
+            $data = $this->getFind($id);
+            if (!$data) {
+                return null;
+            }
+
+            $idUser = Auth::id();
+            $deletedAt = Carbon::now()->toDateTimeString();
+            $data->deleted_at = null;
+            $data->creator_id = $idUser;
+            $data->save();
+            return $data;
+
         } catch (\Exception $e) {
             return null;
         }

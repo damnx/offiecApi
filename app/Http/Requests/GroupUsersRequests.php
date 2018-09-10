@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use Gate;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
 
 class GroupUsersRequests extends FormRequest
 {
@@ -15,6 +14,9 @@ class GroupUsersRequests extends FormRequest
      */
     public function authorize()
     {
+        if (isset(request()->id)) {
+            return Gate::allows('UPDATE_GROUP_USERS');
+        }
         return Gate::allows('CREATE_GROUP_USERS');
     }
 

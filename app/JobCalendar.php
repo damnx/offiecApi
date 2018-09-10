@@ -3,8 +3,10 @@
 namespace App;
 
 use App\JobCalendarGroupUses;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 
 class JobCalendar extends Model
@@ -15,7 +17,7 @@ class JobCalendar extends Model
     public $incrementing = false;
 
     protected $fillable = [
-        'id', 'date', 'day', 'description',
+        'id', 'date', 'day', 'description', 'creator_id',
     ];
 
     public function GroupUsers()
@@ -37,11 +39,13 @@ class JobCalendar extends Model
     public function createJobCalendar($request)
     {
         try {
+            $idUser = Auth::id();
             $jobCalendar = JobCalendar::create([
                 'date' => $request['date'],
                 'day' => $request['day'],
                 'description' => isset($request['description']) ? $request['description'] : null,
                 'id' => uniqid(null, true),
+                'creator_id' => $idUser,
             ]);
             return $jobCalendar;
         } catch (\Exception $e) {
@@ -53,6 +57,7 @@ class JobCalendar extends Model
     public function updateJobCalendar($request, $id)
     {
         try {
+            $idUser = Auth::id();
             $jobCalendar = $this->getFindJobCalendar($id);
             if (!$jobCalendar) {
                 return null;
@@ -60,6 +65,7 @@ class JobCalendar extends Model
 
             $jobCalendar->date = $request['date'];
             $jobCalendar->day = $request['day'];
+            $jobCalendar->creator_id = $idUser;
             $jobCalendar->description = isset($request['description']) ? $request['description'] : null;
             $jobCalendar->save();
 
@@ -177,13 +183,19 @@ class JobCalendar extends Model
     public function destroyJobCalendar($id)
     {
         try {
-            $jobCalendar = JobCalendar::destroy($id);
-            if (!$jobCalendar) {
+            $data = $this->getFindJobCalendar($id);
+            if (!$data) {
                 return null;
             }
-            return $jobCalendar;
+
+            $idUser = Auth::id();
+            $deletedAt = Carbon::now()->toDateTimeString();
+            $data->deleted_at = $deletedAt;
+            $data->creator_id = $idUser;
+            $data->save();
+            return $data;
+
         } catch (\Exception $e) {
-            // return $e->getMessage();
             return null;
         }
     }

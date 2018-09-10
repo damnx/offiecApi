@@ -40,4 +40,14 @@ class GroupUsersPolicy
         return $user->hasAccess('CREATE_GROUP_USERS');
     }
 
+    public function update(User $user)
+    {
+        return $user->hasAccess('UPDATE_GROUP_USERS');
+    }
+
+    public function destroy(User $user)
+    {
+        return $user->hasAccess('DELETE_GROUP_USERS');
+    }
+
 }

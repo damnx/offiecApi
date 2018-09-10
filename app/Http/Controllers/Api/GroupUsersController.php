@@ -47,7 +47,6 @@ class GroupUsersController extends Controller
     public function store(GroupUsersRequests $request)
     {
         if ($request->isMethod('post')) {
-            // $this->authorize('createssss');
             $data = $this->groupUsers->createGroupUsers($request);
             if ($data) {
                 return response()->json([
@@ -90,9 +89,7 @@ class GroupUsersController extends Controller
         }
 
         $data = $this->groupUsers->listGroupUsers($whereData);
-        // if (!$data) {
-        //     abort(404);
-        // }
+
         return response()->json([
             'message' => 'Success',
             'status' => 0,
@@ -118,6 +115,7 @@ class GroupUsersController extends Controller
             'error' => [],
             'data' => $detailsGroupUsers,
         ];
+
         return response()->json($data);
 
     }
@@ -169,15 +167,16 @@ class GroupUsersController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy($id, GroupUsers $groupUsers)
     {
+        $this->authorize('destroy', $groupUsers);
         $data = $this->groupUsers->destroyGroupUsers($id);
         if ($data) {
             return response()->json([
                 'message' => 'Delete success',
                 'status' => 0,
                 'error' => [],
-                'data' => $id,
+                'data' => $data,
             ]);
         }
         return response()->json([

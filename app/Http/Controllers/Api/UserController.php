@@ -36,7 +36,29 @@ class UserController extends Controller
      */
     public function me(UsersMeRequests $request)
     {
+        $data = $this->users->getUsers($request);
+        if ($data) {
+            $roles = $data['roles'];
+            $permissions = [];
+            foreach ($roles as $key => $value) {
+                $permissions[$key] = $value['permissions'];
+            }
+            $data['permissions'] = array_unique(call_user_func_array('array_merge', $permissions));
+            unset( $data['roles']);
+            return response()->json([
+                'message' => 'Login success',
+                'status' => 0,
+                'error' => [],
+                'data' => $data,
+            ]);
+        }
 
+        return response()->json([
+            'message' => 'Login error',
+            'status' => 1,
+            'error' => [],
+            'data' => [],
+        ]);
     }
     public function store(UsersRequests $request)
     {
@@ -97,7 +119,7 @@ class UserController extends Controller
     public function test(UsersRequests $request)
     {
         //
-      dd('1232');
+        dd('1232');
     }
 
     // không xóa khi chưa làm xong

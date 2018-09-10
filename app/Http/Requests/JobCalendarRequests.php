@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use Gate;
 use Illuminate\Foundation\Http\FormRequest;
 
 class JobCalendarRequests extends FormRequest
@@ -13,7 +14,10 @@ class JobCalendarRequests extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if (isset(request()->id)) {
+            return Gate::allows('UPDATE_JOB_CALENDAR');
+        }
+        return Gate::allows('CREATE_JOB_CALENDAR');
     }
 
     /**
