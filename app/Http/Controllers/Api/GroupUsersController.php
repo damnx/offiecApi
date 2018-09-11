@@ -79,6 +79,7 @@ class GroupUsersController extends Controller
         $whereData = [];
         $name = trim($request->input('name'));
         $status = trim($request->input('status'));
+        $pageSize = $request->input('pageSize') ? $request->input('pageSize') : 20;
 
         if ($name) {
             $whereData[] = ['name', 'like', $name . '%'];
@@ -88,7 +89,7 @@ class GroupUsersController extends Controller
             $whereData[] = ['status', $status];
         }
 
-        $data = $this->groupUsers->listGroupUsers($whereData);
+        $data = $this->groupUsers->listGroupUsers($whereData, $pageSize);
 
         return response()->json([
             'message' => 'Success',

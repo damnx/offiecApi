@@ -58,13 +58,13 @@ class GroupUsers extends Model
         }
     }
 
-    public function listGroupUsers($whereData)
+    public function listGroupUsers($whereData, $pageSize)
     {
         try {
             $listGroupUsers = GroupUsers::with('users')
                 ->where($whereData)
                 ->orderBy('created_at', 'desc')
-                ->paginate(20);
+                ->paginate($pageSize);
             return $listGroupUsers;
 
         } catch (\Exception $e) {

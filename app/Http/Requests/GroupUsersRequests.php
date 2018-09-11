@@ -27,9 +27,9 @@ class GroupUsersRequests extends FormRequest
      */
     public function rules()
     {
-        // $id = isset(request()->id) ? request()->id : 'NULL';
+        $id = isset(request()->id) ? request()->id : 'NULL';
         $rules = [
-            'name' => 'required|max:100|unique:group_users,name,NULL,id,deleted_at,NULL',
+            'name' => 'required|max:100|unique:group_users,name,'.$id.',id,deleted_at,NULL',
             'status' => 'required',
         ];
 
