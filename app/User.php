@@ -47,6 +47,11 @@ class User extends Authenticatable
         return $this->belongsTo('App\GroupUsers', 'group_user_id', 'id');
     }
 
+    public function task()
+    {
+        return $this->belongsTo('App\Task', 'user_id', 'id');
+    }
+
     /**
      * Checks if User has access to $permissions.
      */

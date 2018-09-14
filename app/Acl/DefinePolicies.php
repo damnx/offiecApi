@@ -20,6 +20,9 @@ class DefinePolicies
         'UPDATE_ROLES' => 'App\Policies\RolesPolicy@update',
         'VIEW_ROLES' => 'App\Policies\RolesPolicy@view',
         'DELETE_ROLES' => 'App\Policies\RolesPolicy@destroy',
+
+        //Task
+        'CREATE_TASK' => 'App\Policies\RolesPolicy@create',
     ];
 
     public static function defineAbilities()

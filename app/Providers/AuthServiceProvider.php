@@ -18,6 +18,7 @@ class AuthServiceProvider extends ServiceProvider
         'App\GroupUsers' => 'App\Policies\GroupUsersPolicy',
         'App\JobCalendar' => 'App\Policies\JobCalendarPolicy',
         'App\Roles' => 'App\Policies\RolesPolicy',
+        'App\Task' => 'App\Policies\TaskPolicy',
     ];
 
     /**

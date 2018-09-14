@@ -35,6 +35,8 @@ Route::middleware(['auth:api'])->group(function () {
 
     Route::post('/create-role', 'Api\RolesController@store');
 
+    Route::post('/create-task', 'Api\TasksController@store');
+
     // Route::delete('/restore-group-users/{id}', 'Api\GroupUsersController@restoreGroupUsers');
    
 
